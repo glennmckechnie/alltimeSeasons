@@ -1,42 +1,104 @@
-*30 Oct 2022*
+*28th Dec 2024*
+Further changes to this fork. (Version 0.06)
 
-The alltimeSeasons addition takes the NOAA data (Monthly/ Yearly Reports) and presents some of the Temperature and Rainfall stats as colored html.
+Reorganized this skins contents so that it can be managed by weectl extension.
+There are still some manual steps required, but it should be more managable and straightforward now.
+Any problems with these changes - raise an issue above.
 
-This site updates and modifies the original repo instructions at https://github.com/gedger/alltimeSeasons
+The original, built in timing method of "refresh_interval" did not work and has now been removed. To control the generation interval for this skin then set an appropriate stanza in the [[AllTimeSeasons]] section of weewx.conf. The default is set at 10 minutes
 
-Reorganized repo files.
+ [[AllTimeSeasons]
+ [...]
+ report_timing = '*/10 * * * *'  # default timing
 
-Moved original files to weewx410/ (the version that the files appear to have come from)
+Change summary.
+  Integrate files into a weewx style installable skin.
+  Remove refresh_interval code and replace it with the timing_report method.
+  historygenerator.py has been reworked to use the Weewx v4 style logging.
+  Catch a TypeError exception in the summary column, due to missing ('-') entries in the monthly values..
 
-Added weewx460/ and weewx491/ directories with their respective files. Those files can replace your existing Season skin files, or if you've already modified those then use the diffs to add only what's needed.
-The 'diffs' are .html files that show what has changed for each version. Use either html diff (or both) to assist with the changes. They are included in the hope they clarify what needs to be done.
 
-The historygenerator.py file belongs in the weewx directory -- bin/user/historygenerator.py
+To install this skin addition...
 
-After installation of that file, restart weewx for it to take affect.
 
-The skin modifications you make to utilize that, now installed, historygenerator.py file will happen once you've added them to the skin. Watch your log for errors.
+   1. Download
 
-Bugfix:
+    wget -O weewx-AllSeasons.zip https://github.com/glennmckechnie/weewx-AllSeasons/archive/refs/heads/main.zip
 
-Modified historygenerator.py to 'break' on success (resolves duplicate style strings)
+   2. Run the installer:
 
-Enhancement:
+    For weewx 5.x...
 
-Added weewx4 style logging to historygenerator.py
+    weectl extension install weewx-AllSeasons.zip
 
-Style changes:
+    or the older 4,x versions use...
 
-Modified layout to show "out of bounds" values as red text.
+    wee_extension --install weewx-AllSeasons.zip
 
-Change 'Total' columns to white backgrounds with bold text.
+  3. Modify skins/Seasons/index.html.tmpl
 
-Output html passes https://validator.w3.org tests.
+  Before you make changes any changes to index.html.tmpl, make a backup of it.
+  
+  
+  To add the menu item to the Seasons skin, 2 new lines need to be included within the **skins/Seasons/index.html.tmpl** file
+  
+  So these lines...
+  
+            <a class="button" id="button_history_alltime"
+               onclick="choose_history('alltime')">All-time</a>
+  
+   Will be inserted into the history_widget section, as follows...
+  N.B. ([...] substitutes for repetitive content. Content that has been removed for clarity. Ignore it.)
+  
+      <div id="plot_group">
+        <div id="history_widget" class="widget">
+          <div id="plot_title" class="widget_title">History:&nbsp;&nbsp;
+            [...]
+            <a class="button" id="button_history_alltime"
+               onclick="choose_history('alltime')">All-time</a>
+          </div>
+          <div id="history_day" class="plot_container">
 
-Questions, Issues, Errors? Use the issues button above or use the weewx-users mailing list (google groups)
 
+  This skin now generates historygenerator.inc and places it in your default WWW_ROOT folder. The Seasons skin needs to be able find and include this files content when its index.htm.tmpl is generated. This is done by specifying the absolute path as in the example below. This example assumes that /var/www/html is your web server location ( your WWW_ROOT).
+  
+  The second addition to the **skins/Seasons/index.html.tmpl** file consists of the 3 lines starting with #.
+  
+          #if os.path.exists("/var/www/html/histgenerator.inc")
+             #include "/var/www/html/histgenerator.inc"
+          #end if
+  
+  These will be inserted above the footer section, as follows...
+  
+          <div id="history_year" class="plot_container" style="display:none">
+          [...]
+          </div>
+          #if os.path.exists("/var/www/html/histgenerator.inc")
+             #include "/var/www/html/histgenerator.inc"
+          #end if
+          </div>
+  
+  4. Optional:
+  Ideally, the historygenerator.inc file will exist when your main skin (Seasons) StdReport section runs. That requires the [[AllTimesSeasons]] section in weewx.conf to run first.  To do that, then move the [[AllTimeSeasons]] section to before the Seasons skin section in the weewx.conf file.
+  It will work without that change, the only difference is it won't be picked up until the next report cycle ie:- it will be slightly older - which hardly matters as the default is to generate it every 10 minutes.
+
+  5. Uninstall
+
+   Use weewctl extension to uninstall the extension, then **restore your original index.html.tmpl** (that you backed up).
+
+    For weewx 5.x...
+
+    weectl extension uninstall weewx-AllSeasons.zip
+
+    or the older 4,x versions use...
+
+    wee_extension --uninstall weewx-AllSeasons.zip
+
+ Notes regarding older changes have been moved to the bottom of this page.
+ Gedgers original description and notes are immediately below
 
 =========== End of fork changes =========
+=========== Original Description =========
 
 
 # alltimeSeasons skin
@@ -80,3 +142,39 @@ Finally edit your weewx.conf file and change the skin to your new skin, I just c
 In theory that's all. However, although I have done this on my own system I haven't actually followed these instructions on a clean install to confirm they work. If you try you may well be the first. If you find a problem then please let me know and I'll do my best to correct it.
 
 NOTE: This has only been tested with weewx V4.00 and later
+
+==== History of Fork changes ===
+
+*30 Oct 2022*
+
+The alltimeSeasons addition takes the NOAA data (Monthly/ Yearly Reports) and presents some of the Temperature and Rainfall stats as colored html.
+
+Changes to the original repo at https://github.com/gedger/alltimeSeasons that this was forked from are...
+
+Reorganized repo files.
+
+Moved the original files to weewx410 (the version that the files appear to have come from)
+
+Added weewx460 and weewx491 directories with their respective files. Those files can replace your existing Season skin files, or if you've already modified then use the diffs.
+The 'diffs' are .html files that show what has changed for each version. Use either html diff (or both) to assist with the changes. They are included in the hope they clarify what needs to be done.
+
+The historygenerator.py file belongs in the weewx directory -- bin/user/historygenerator.py
+
+After installation, restart weewx for changes to take affect.
+
+Bugfix:
+
+Modified historygenerator.py to break on success (resolves duplicate style strings)
+
+Enhancement:
+
+Added weewx4 style logging to historygenerator.py
+
+Style changes:
+
+Modified layout to show "out of bounds" values as red text.
+
+Change 'Total' columns to white backgrounds with bold text.
+
+Output html passes https://validator.w3.org tests.
+
