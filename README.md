@@ -5,9 +5,9 @@ Reorganized this skins contents so that it can be managed by weectl extension.
 There are still some manual steps required, but it should be more managable and straightforward now.
 Any problems with these changes - raise an issue above.
 
-The original, built in timing method of "refresh_interval" did not work and has now been removed. To control the generation interval for this skin then appropriate stanza is preset in the [[AllTimeSeasons]] section of weewx.conf.
+The original, built in timing method of "refresh_interval" did not work and has now been removed. To control the generation interval for this skin then [an appropriate stanza](https://www.weewx.com/docs/5.0/custom/report-scheduling/) is preset in the [[AllTimeSeasons]] section of weewx.conf.
 
-The default is set at 10 minutes, change it to suit.
+The default is set at 10 minutes, you can of course change it.
 
 <pre>
   [[AllTimeSeasons]
@@ -16,10 +16,10 @@ The default is set at 10 minutes, change it to suit.
 </pre>
 
 Change summary.
-  Integrate files into a weewx style installable skin.
-  Remove refresh_interval code and replace it with the timing_report method.
-  historygenerator.py has been reworked to use the Weewx v4 style logging.
-  Catch a TypeError exception in the summary column, due to missing ('-') entries in the monthly values..
+  *Integrate files into a weewx style installable skin.
+  *Remove refresh_interval code and replace it with the timing_report method.
+  *historygenerator.py has been reworked to use the Weewx v4 style logging.
+  *Catch a TypeError exception in the summary column, due to missing ('-') entries in the monthly values..
 
 
 To install this skin addition...
