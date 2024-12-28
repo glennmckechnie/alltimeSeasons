@@ -1,15 +1,19 @@
-*28th Dec 2024*
+**28th Dec 2024**
 Further changes to this fork. (Version 0.06)
 
 Reorganized this skins contents so that it can be managed by weectl extension.
 There are still some manual steps required, but it should be more managable and straightforward now.
 Any problems with these changes - raise an issue above.
 
-The original, built in timing method of "refresh_interval" did not work and has now been removed. To control the generation interval for this skin then set an appropriate stanza in the [[AllTimeSeasons]] section of weewx.conf. The default is set at 10 minutes
+The original, built in timing method of "refresh_interval" did not work and has now been removed. To control the generation interval for this skin then appropriate stanza is preset in the [[AllTimeSeasons]] section of weewx.conf.
 
- [[AllTimeSeasons]
- [...]
- report_timing = '*/10 * * * *'  # default timing
+The default is set at 10 minutes, change it to suit.
+
+<pre>
+  [[AllTimeSeasons]
+  [...]
+  report_timing = '*/10 * * * *'  # default timing
+</pre>
 
 Change summary.
   Integrate files into a weewx style installable skin.
@@ -20,26 +24,24 @@ Change summary.
 
 To install this skin addition...
 
+   # Download
 
-   1. Download
+    wget -O weewx-AllTimeSeasons.zip https://github.com/glennmckechnie/alltimeSeasons/archive/refs/heads/master.zip
 
-    wget -O weewx-AllSeasons.zip https://github.com/glennmckechnie/weewx-AllSeasons/archive/refs/heads/main.zip
+   # Run the installer:
 
-   2. Run the installer:
+   For weewx 5.x...
 
-    For weewx 5.x...
+     weectl extension install weewx-AllTimeSeasons.zip
 
-    weectl extension install weewx-AllSeasons.zip
+   or the older 4,x versions use...
 
-    or the older 4,x versions use...
+     wee_extension --install weewx-AllTimeSeasons.zip
 
-    wee_extension --install weewx-AllSeasons.zip
-
-  3. Modify skins/Seasons/index.html.tmpl
+  # Modify skins/Seasons/index.html.tmpl
 
   Before you make changes any changes to index.html.tmpl, make a backup of it.
-  
-  
+    
   To add the menu item to the Seasons skin, 2 new lines need to be included within the **skins/Seasons/index.html.tmpl** file
   
   So these lines...
@@ -48,6 +50,7 @@ To install this skin addition...
                onclick="choose_history('alltime')">All-time</a>
   
    Will be inserted into the history_widget section, as follows...
+   
   N.B. ([...] substitutes for repetitive content. Content that has been removed for clarity. Ignore it.)
   
       <div id="plot_group">
@@ -78,26 +81,27 @@ To install this skin addition...
           #end if
           </div>
   
-  4. Optional:
+  # Optional:
   Ideally, the historygenerator.inc file will exist when your main skin (Seasons) StdReport section runs. That requires the [[AllTimesSeasons]] section in weewx.conf to run first.  To do that, then move the [[AllTimeSeasons]] section to before the Seasons skin section in the weewx.conf file.
   It will work without that change, the only difference is it won't be picked up until the next report cycle ie:- it will be slightly older - which hardly matters as the default is to generate it every 10 minutes.
 
-  5. Uninstall
+  # Uninstall
 
    Use weewctl extension to uninstall the extension, then **restore your original index.html.tmpl** (that you backed up).
 
-    For weewx 5.x...
+   For weewx 5.x...
 
-    weectl extension uninstall weewx-AllSeasons.zip
+    weectl extension uninstall weewx-AllTimeSeasons.zip
 
-    or the older 4,x versions use...
+   or the older 4,x versions use...
 
-    wee_extension --uninstall weewx-AllSeasons.zip
+    wee_extension --uninstall weewx-AllTimeSeasons.zip
 
  Notes regarding older changes have been moved to the bottom of this page.
  Gedgers original description and notes are immediately below
 
 =========== End of fork changes =========
+
 =========== Original Description =========
 
 
